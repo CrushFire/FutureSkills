@@ -1,0 +1,814 @@
+openapi: 3.0.3
+info:
+  title: Swagger Avito - OpenAPI 3.0
+  description: ''
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://avito.swagger.io/api/v3
+tags:
+  - name: product
+    description: Everything about your Products
+  - name: user
+    description: Operations about user
+  - name: image
+    description: Operations about images
+  - name: category
+    description: Operations about categories
+  - name: comment
+    description: Operations about comments
+paths:
+  /product/{productId}:
+    get:
+      tags:
+        - product
+      summary: Get product by ID
+      description: Get details of a product by its ID
+      operationId: getProductById
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+    delete:
+      tags:
+        - product
+      summary: Delete an existing product
+      description: Delete an existing product by Id
+      operationId: deleteProduct
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Product deleted successfully
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Product not found
+    put:
+      tags:
+        - product
+      summary: Update an existing product
+      description: Update an existing product by Id
+      operationId: updateProduct
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update an existing product in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Not found
+  /product:
+    post:
+      tags:
+        - product
+      summary: Create a new product
+      description: Add a new product to the store
+      operationId: createProduct
+      requestBody:
+        description: Product to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '201':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid data supplied
+  /product/search/name/{productName}:
+    get:
+      tags:
+        - product
+      summary: Search for products by name
+      description: >-
+        Retrieve a list of products that match a given name, supporting partial
+        matches.
+      operationId: searchProductByName
+      parameters:
+        - name: productName
+          in: path
+          required: true
+          description: Search term for the product name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully found products matching the name
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '404':
+          description: No products found matching the given name
+  /product/filter/category/{categoryName}:
+    get:
+      tags:
+        - product
+      summary: Filter products by category
+      description: Fetch a list of products belonging to a specific category.
+      operationId: filterProductsByCategory
+      parameters:
+        - name: categoryName
+          in: path
+          required: true
+          description: Category name to filter products
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Products retrieved from the specified category
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '404':
+          description: No products found in this category
+  # /product/update-price:
+  #   patch:
+  #     tags:
+  #       - product
+  #     summary: Update product price
+  #     description: Modify the price of an existing product without changing other details.
+  #     operationId: updateProductPrice
+  #     parameters:
+  #       - name: productId
+  #         in: path
+  #         required: true
+  #         description: Product ID to update the price
+  #         schema:
+  #           type: integer
+  #           format: int64
+  #     requestBody:
+  #       description: Updated price for the product.
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #             properties:
+  #               price:
+  #                 type: number
+  #                 format: float
+  #     responses:
+  #       '200':
+  #         description: Successfully updated the product price
+  #       '400':
+  #         description: Invalid price data
+  #       '404':
+  #         description: Product not found
+  /user/{userId}:
+    get:
+      tags:
+        - user
+      summary: Get user by ID
+      description: Retrieve details of a user by their ID
+      operationId: getUserById
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+    put:
+      tags:
+        - user
+      summary: Update user details
+      description: Update user details by user ID
+      operationId: updateUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updated user data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User updated successfully
+        '400':
+          description: Invalid data supplied
+        '404':
+          description: User not found
+    delete:
+      tags:
+        - user
+      summary: Delete user
+      description: Remove a user from the system by ID
+      operationId: deleteUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User deleted successfully
+        '404':
+          description: User not found
+  /user:
+    post:
+      tags:
+        - user
+      summary: Register a new user
+      description: Add a new user to the system
+      operationId: createUser
+      requestBody:
+        description: User data to be registered
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User created successfully
+        '400':
+          description: Invalid user data
+  /image/{imageId}:
+    get:
+      tags:
+        - image
+      summary: Get image by ID
+      description: Retrieve an image by its ID
+      operationId: getImageById
+      parameters:
+        - name: imageId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Image'
+        '404':
+          description: Image not found
+    delete:
+      tags:
+        - image
+      summary: Delete an image
+      description: Remove an image from the system
+      operationId: deleteImage
+      parameters:
+        - name: imageId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Image deleted successfully
+        '404':
+          description: Image not found
+  /image:
+    post:
+      tags:
+        - image
+      summary: Upload an image
+      description: Upload an image to the system
+      operationId: uploadImage
+      requestBody:
+        description: Image file to be uploaded
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Image'
+      responses:
+        '201':
+          description: Image uploaded successfully
+        '400':
+          description: Invalid image data
+  /category/{categoryId}:
+    get:
+      tags:
+        - category
+      summary: Get category by ID
+      description: Retrieve a category by its ID
+      operationId: getCategoryById
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Category retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '404':
+          description: Category not found
+    put:
+      tags:
+        - category
+      summary: Update category details
+      description: Update category by its ID
+      operationId: updateCategory
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updated category data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+      responses:
+        '200':
+          description: Category updated successfully
+        '400':
+          description: Invalid category data
+        '404':
+          description: Category not found
+    delete:
+      tags:
+        - category
+      summary: Delete an category
+      description: Remove an category from the system
+      operationId: deleteCategory
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Category deleted successfully
+        '404':
+          description: Category not found
+  /category:
+    post:
+      tags:
+        - category
+      summary: Create a new category
+      description: Add a new category to the system
+      operationId: createCategory
+      requestBody:
+        description: Category data to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+      responses:
+        '201':
+          description: Category created successfully
+        '400':
+          description: Invalid category data
+  /parentCategory/{parentCategoryId}:
+    get:
+      tags:
+        - parentCategory
+      summary: Get category by ID
+      description: Retrieve a category by its ID
+      operationId: getCategoryById
+      parameters:
+        - name: parentCategoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: ParentCategory retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '404':
+          description: ParentCategory not found
+    put:
+      tags:
+        - parentCategory
+      summary: Update category details
+      description: Update category by its ID
+      operationId: updateParentCategory
+      parameters:
+        - name: parentCategoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updated category data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParentCategory'
+      responses:
+        '200':
+          description: Category updated successfully
+        '400':
+          description: Invalid category data
+        '404':
+          description: Category not found
+    delete:
+      tags:
+        - parentCategory
+      summary: Delete an parentCategory
+      description: Remove an parentCategory from the system
+      operationId: deleteParentCategory
+      parameters:
+        - name: parentCategoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: ParentCategory deleted successfully
+        '404':
+          description: ParentCategory not found
+  /parentCategory:
+    post:
+      tags:
+        - parentCategory
+      summary: Create a new parentCategory
+      description: Add a new parentCategory to the system
+      operationId: createParentCategory
+      requestBody:
+        description: PArentCategory data to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParentCategory'
+      responses:
+        '201':
+          description: Category created successfully
+        '400':
+          description: Invalid category data
+  /comment/{commentId}:
+    get:
+      tags:
+        - comment
+      summary: Get comment by ID
+      description: Retrieve a comment by its ID
+      operationId: getCommentById
+      parameters:
+        - name: commentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Comment retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '404':
+          description: Comment not found
+    put:
+      tags:
+        - comment
+      summary: Update an existing comment
+      description: Update a comment by its ID
+      operationId: updateComment
+      parameters:
+        - name: commentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updated comment data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        '200':
+          description: Comment updated successfully
+        '400':
+          description: Invalid comment data
+        '404':
+          description: Comment not found
+    delete:
+      tags:
+        - comment
+      summary: Delete a comment
+      description: Remove a comment from the system
+      operationId: deleteComment
+      parameters:
+        - name: commentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Comment deleted successfully
+        '404':
+          description: Comment not found
+  /comment:
+    post:
+      tags:
+        - comment
+      summary: Post a new comment
+      description: Create a new comment in the system
+      operationId: createComment
+      requestBody:
+        description: Comment data to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        '201':
+          description: Comment posted successfully
+        '400':
+          description: Invalid comment data
+components:
+  schemas:
+      Product:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
+            readOnly: true
+          sellerId:
+            type: integer
+            format: int64
+            example: 1
+          name:
+            type: string
+            example: 'Чайник'
+          description:
+            type: string
+            example: 'Новый, практически не использованный'
+          phoneNmber:
+            type: string
+            example: '+79788375307'
+          address:
+            type: string
+            example: 'ул. Некрасова, д 53, кв 56'
+          category:
+            $ref: '#/components/schemas/Category'
+          categoryId:
+            type: integer
+            format: int32
+            example: 1
+          cost:
+            type: number
+            format: decimal
+            example: 100.01
+          images:
+            type: array
+            xml:
+              name: Image
+              wrapped: true
+            items:
+              $ref: '#/components/schemas/Image'
+          comment:
+            type: array
+            xml:
+              name: Comment
+              wrapped: true
+            items:
+              $ref: '#/components/schemas/Comment'
+          status:
+            type: boolean
+            description: active advertisment or not
+        xml:
+          name: Product
+      Image:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
+            readOnly: true
+          name:
+            type: string
+            example: 'picture123'
+          dateCreate:
+            type: string
+            format: date-time
+            example: '12-11-23 12:11:01'
+            readOnly: true
+          content:
+            type: array
+            xml:
+              name: Content
+              wrapped: true
+            items:
+              type: integer
+              format: byte
+              description: content which save how array of bytes
+          length:
+            type: integer
+            format: int32
+            description: long of file
+            readOnly: true
+          productId:
+            type: integer
+            format: int64
+            example: 1
+          userId:
+            type: integer
+            format: int64
+            example: 1
+        xml:
+          name: Image
+      User:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
+            readOnly: true
+          name:
+            type: string
+            example: 'Anton'
+          birthregister:
+            type: string
+            format: date
+            example: '11-12-23'
+            readOnly: true
+          email:
+            type: string
+            format: email
+            example: 'user123@mail.ru'
+          login:
+            type: string
+            example: 'user123'
+          password:
+            type: string
+            description: symbol >= 6
+            example: '123456'
+          isBlocked:
+            type: boolean
+            description: status block user or not
+          myProduct:
+            type: array
+            xml:
+              name: Product
+              wrapped: true
+            items:
+              $ref: '#/components/schemas/Product'
+          image:
+            $ref: '#/components/schemas/Image'
+        xml:
+          name: User
+      ParentCategory:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
+            readOnly: true
+          name:
+            type: string
+            example: 'Бытовая техника'
+          categories:
+            type: array
+            xml:
+              name: Category
+              wrapped: true
+            items:
+              $ref: '#/components/schemas/Category'
+        xml:
+          name: ParentCategory
+      Comment:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
+            readOnly: true
+          productId:
+            type: integer
+            format: int64
+            example: 1
+            readOnly: true
+          authorid:
+            type: integer
+            format: int64
+            example: 1
+            readOnly: true
+          textComment:
+            type: string
+            example: 'Этот товар офигенный!'
+      Category:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
+            readOnly: true
+          parentCategoryId:
+            type: integer
+            format: int64
+            example: 1
+            readOnly: true
+          name:
+            type: string
+            example: 'technic'
+        xml:
+          name: Category
+  securitySchemes:
+    petstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
